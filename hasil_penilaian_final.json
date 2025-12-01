@@ -1,0 +1,86 @@
+{
+  "assessorProfile": {
+    "id": 1,
+    "name": "AI Auto-Assessor",
+    "photoUrl": "https://ui-avatars.com/api/?name=AI"
+  },
+  "decision": "PASSED",
+  "reviewedAt": "2025-11-30 10:00:00",
+  "scoresOverview": {
+    "project": 100,
+    "interview": 12,
+    "total": 80.0
+  },
+  "reviewChecklistResult": {
+    "project": [],
+    "interviews": {
+      "minScore": 0,
+      "maxScore": 4,
+      "scores": [
+        {
+          "id": 1,
+          "score": 3,
+          "reason": "The candidate provides specific examples of challenges faced during the certification process, including issues with accuracy and violation laws. However, the answer could be more detailed in terms of the impact and outcomes of their solutions."
+        },
+        {
+          "id": 2,
+          "score": 2,
+          "reason": "The candidate provided a general definition of transfer learning in TensorFlow, but did not share any specific experience or project benefits. They mentioned some pre-trained models (e.g. VGG16, VGG19) and their applications, but the answer lacked concrete examples and details."
+        },
+        {
+          "id": 3,
+          "score": 3,
+          "reason": "The candidate mentions a complex model architecture, specifically using Keras or TensorFlow for Celiac Disease Prediction. However, the details provided are somewhat limited and lack technical depth, preventing a higher score."
+        },
+        {
+          "id": 4,
+          "score": 2,
+          "reason": "The candidate's answer is vague and lacks clarity in explaining the implementation of dropout in a TensorFlow model and its effect on training. They mention using dropout layers in a project, but fail to provide a clear explanation of how it works or its benefits."
+        },
+        {
+          "id": 5,
+          "score": 2,
+          "reason": "The candidate's answer is partially correct as they mention some steps in building a CNN, but it lacks detail. They outline the basic process of splitting the dataset and using data augmentation, but skip important details such as compiling the model, selecting an optimizer and loss function, and training the model."
+        }
+      ]
+    }
+  },
+  "transcriptDetails": [
+    {
+      "video_id": 1,
+      "question": "Can you share any specific challenges you faced while working on certification and how you overcame them?",
+      "answer": " ok, share any specific challenges you faced while working on certification and how you overcome them  ah, ok, actually for the challenges, there are some challenges when i took the certification  especially for the project i mentioned that i already working with it  the first one is actually to meet the specific accuracy or violation laws for the evaluation matrix  and actually that just need to take some trial and error with different architecture  for example like  we can  try to add more layer, more neurons, changes the neurons  or even i also apply the drop out layer  so it really helps with the validation laws to become more lower  and i think that's one of the biggest challenges that i have while  working on this certification",
+      "score": 3,
+      "reason": "The candidate provides specific examples of challenges faced during the certification process, including issues with accuracy and violation laws. However, the answer could be more detailed in terms of the impact and outcomes of their solutions."
+    },
+    {
+      "video_id": 2,
+      "question": "Can you describe your experience with transfer learning in TensorFlow? How did it benefit your projects?",
+      "answer": " can you describe your experience with transfer learning and time short flow how do you benefit  the projects ah okay uh about transfer learning is actually uh we use existing train model from  attention flow for example like uh vgc 16 vg 19 right uh especially uh for for some cases  uh that we need to use deep learning using keras applications uh for example like image  classification we can use transfer learning models which is that's already trained model with  exceptionally high accuracy high performance uh yeah even though it's trained with different  data sets  but it will it really helps uh to improve uh our model performance uh model accuracy model loss  and you know for example like mobile net uh vg19 vgg 16 yeah efficient net  it will help to improve our our models comparing to the one  you use a traditional cnn model yeah cnn model with the convolutional 2d yeah max pooling and  yeah it it's it's quite good actually to use transfer learning it really helps with our  model performance to improve our model performance",
+      "score": 2,
+      "reason": "The candidate provided a general definition of transfer learning in TensorFlow, but did not share any specific experience or project benefits. They mentioned some pre-trained models (e.g. VGG16, VGG19) and their applications, but the answer lacked concrete examples and details."
+    },
+    {
+      "video_id": 3,
+      "question": "Describe a complex TensorFlow model you have built and the steps you took to ensure its accuracy and efficiency.",
+      "answer": " Describe a complex TensorFlow model you've built and the steps you took to ensure its accuracy and efficiency  Complex TensorFlow model you've built and steps you took to ensure its accuracy  I will take one of my previous project that I also use Keras or TensorFlow model  It is about Celiac Disease Prediction  This is also I use the research project for my undergraduate thesis for my Scripc  I use this model, it's quite challenging even though it's achieved high accuracy  With some dense layer, with some dropout layer  And trial and error also with the callback function, with the neurons  But the problem is it's not easy to use this model  The problem is the dataset is not balanced  So it has the imbalanced class datasets  And the approach that I use is to just to use the technique called smooth and synthetic oversampling technique  With edited nearest neighbor  Which is basically it's just oversampling and undersampling  the datasets  It helps with the accuracy",
+      "score": 3,
+      "reason": "The candidate mentions a complex model architecture, specifically using Keras or TensorFlow for Celiac Disease Prediction. However, the details provided are somewhat limited and lack technical depth, preventing a higher score."
+    },
+    {
+      "video_id": 4,
+      "question": "Explain how to implement dropout in a TensorFlow model and the effect it has on training.",
+      "answer": " Jelaskan bagaimana cara mengimplementasikan dropout di test on flow model dan test on training  Sebelumnya saya juga mengimplementasikan dropout layer  Juga di project exhibition dalam sertifikasi ini  Dan kita bisa menambahkan dropout layer  Contohnya, jika saya tidak salah, saya sudah menggunakan dropout layer di image classification  German traffic something, jika saya tidak salah  Saya sudah menggunakan dropout layer ini  Di...  Di...  Di...  Tidak di akhir  Di...  Di tengah layer  Jadi, ada layer flatten  Bukan flatten, layer convolutional  Dan layer flatten  Dan saya menggunakan layer dropout  Yang saya gunakan dengan rate 0.2 atau 0.5 jika saya tidak salah  Dan layer dense dan layer output terakhir  Ini adalah efeknya...  Ini sangat membantu untuk...  Kebaikan akurasi kita dan turunkan keterangan validation kita  Dengan membalaskan beberapa layer sebelumnya  Ya, misalnya kita memiliki layer dense 64  Dan layer berikutnya, kita mengimplementasikan layer dropout dengan rate 0.5  akan berubah secara random setiap epoch dari layer dance yang sebelumnya",
+      "score": 2,
+      "reason": "The candidate's answer is vague and lacks clarity in explaining the implementation of dropout in a TensorFlow model and its effect on training. They mention using dropout layers in a project, but fail to provide a clear explanation of how it works or its benefits."
+    },
+    {
+      "video_id": 5,
+      "question": "Describe the process of building a convolutional neural network (CNN) using TensorFlow for image classification.",
+      "answer": " Describe the process of building or configuring or using software image as fiction  okay the CNN one right so at the first time of course we need to make sure  there are split the image folder split it for for each class okay and then we  can use\u30d2\u0627\u0631\u0633 Image Dataset to split the training and the validation dataset  all right yeah of course we can use another another set which is the test  dataset yeah but yeah okay the next one we can we can just maybe we need to  implement also the Xiaobai data set  data image data augmentation tool to make our data set more  veritive right for example like we can rotate we can zoom it we can crop it  yeah and yeah the last thing yeah of course we we can build our chain model  with the conventional 2D specify the filters the kernel size the LR activation  force the inputs input shape for the first layer and then we can apply the  max pooling 2D yeah and the next layer we can just use  conventional 2D max pooling and whatever it is and after that we apply  the flatten layer and dropout layer if you want and the last thing don't forget  to use the dense layer right for the output  like the last of",
+      "score": 2,
+      "reason": "The candidate's answer is partially correct as they mention some steps in building a CNN, but it lacks detail. They outline the basic process of splitting the dataset and using data augmentation, but skip important details such as compiling the model, selecting an optimizer and loss function, and training the model."
+    }
+  ],
+  "Overall notes": "Assessment completed automatically via Local AI. Total Score: 80.0"
+}

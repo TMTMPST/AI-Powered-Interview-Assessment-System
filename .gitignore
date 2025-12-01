@@ -1,0 +1,7 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+vid/
+temp_interview_data/
