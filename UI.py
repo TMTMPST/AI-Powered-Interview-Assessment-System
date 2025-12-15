@@ -132,17 +132,26 @@ STRICT EVALUATION CRITERIA:
 4. STRUCTURE: Is the answer well-organized and coherent?
 5. PROFESSIONAL INSIGHT: Does the answer show real-world experience vs. textbook knowledge?
 
-RED FLAGS (automatic score reduction):
-- Vague phrases like "I would do..." without specific examples = -1 point
-- No concrete metrics or outcomes mentioned = -1 point
-- Answer seems memorized or generic = -1 point
-- Doesn't directly answer the question = -1 point
+RED FLAGS (reduce score):
+- Vague phrases like "I would do..." without specific examples
+- No concrete metrics, numbers, or measurable outcomes
+- Answer seems memorized or overly generic
+- Doesn't directly address the question asked
+- Claims without supporting evidence or details
+
+SCORING DISTRIBUTION:
+- Score 0: No answer or completely off-topic
+- Score 1: Minimal effort, lacks substance, very generic
+- Score 2: Basic answer with some relevance but missing key details
+- Score 3: Good answer with specific examples and reasonable depth
+- Score 4: Excellent answer with concrete examples, metrics, clear expertise, and comprehensive coverage
 
 IMPORTANT:
-- Be SKEPTICAL. Most candidates score 2-3, not 4.
-- Score 4 requires EXCEPTIONAL detail, real metrics, and clear expertise.
-- Don't be generous - be FAIR and STRICT like a real HR professional.
-- Ignore speech disfluencies, accent, or grammar issues from transcription.
+- Evaluate OBJECTIVELY based on the content provided
+- Use the FULL score range (0-4) based on answer quality
+- Award higher scores when candidates provide specific details and evidence
+- Award lower scores for vague or incomplete answers
+- Ignore speech errors, accent issues, or transcription artifacts
 
 You MUST respond with ONLY a valid JSON object:
 {{"score": <0-{MAX_SCORE_PER_QUESTION}>, "reason": "<2-3 sentence professional explanation>"}}"""
@@ -156,10 +165,13 @@ CANDIDATE'S TRANSCRIPT (from speech-to-text):
 SCORING RUBRIC:
 {rubric}
 
-Evaluate this candidate's response with the strictness of a Senior HR Director.
-Consider: Did they give SPECIFIC examples? Real metrics? Demonstrate actual experience?
-Or was it vague and generic?
+Evaluate this response objectively. Score based on:
+1. How well they answered the question
+2. Specificity of examples and details provided
+3. Depth of knowledge demonstrated
+4. Relevance and coherence
 
+Use the FULL score range (0-4). Give credit where deserved.
 Return ONLY the JSON object with score and reason."""
 
     return {
@@ -170,8 +182,9 @@ Return ONLY the JSON object with score and reason."""
         ],
         "stream": False,
         "options": {
-            "temperature": 0.3,  # Lower temperature = more consistent, stricter evaluation
+            "temperature": 0.5,  # Balanced temperature for more varied, objective evaluation
             "top_p": 0.9,
+            "num_predict": 200,  # Ensure complete response
         }
     }
 
@@ -288,7 +301,116 @@ def compute_final_scores(question_rows, transcript: str, project_score: float | 
 # STREAMLIT UI
 # =========================
 
-st.set_page_config(page_title="AI Interview Assessment", layout="wide")
+st.set_page_config(
+    page_title="AI Interview Assessment",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Custom CSS for professional look
+st.markdown("""
+<style>
+    /* Main title styling */
+    .main-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+        padding: 1rem 0;
+        border-bottom: 3px solid #3b82f6;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        color: #64748b;
+        margin-bottom: 2rem;
+    }
+
+    /* Section headers */
+    .section-header {
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 600;
+        margin: 1.5rem 0 1rem 0;
+        font-size: 1.1rem;
+    }
+
+    /* Info boxes */
+    .info-box {
+        background-color: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        padding: 1rem 1.25rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+    }
+
+    .success-box {
+        background-color: #f0fdf4;
+        border-left: 4px solid #22c55e;
+        padding: 1rem 1.25rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+    }
+
+    .warning-box {
+        background-color: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        padding: 1rem 1.25rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+    }
+
+    /* Status badge */
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .status-online {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .status-offline {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* Cards */
+    .metric-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 1.25rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* Hide streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* Button styling */
+    .stButton>button {
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        font-weight: 600;
+        border: none;
+        padding: 0.5rem 2rem;
+        border-radius: 6px;
+        transition: all 0.3s;
+    }
+
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # Check if Ollama is running
 @st.cache_data(ttl=60)
@@ -299,45 +421,59 @@ def check_ollama_connection():
     except:
         return False
 
-st.title("AI-Powered Interview Assessment Dashboard")
+# Title and header
+st.markdown('<h1 class="main-title">AI-Powered Interview Assessment System</h1>', unsafe_allow_html=True)
+st.markdown('<p class="subtitle">Automated candidate evaluation using advanced AI models</p>', unsafe_allow_html=True)
 
-st.markdown(
-    """
-Aplikasi ini membantu HR:
-1. Menyusun **daftar pertanyaan** dan **rubrik penilaian**.
-2. Mengupload **video interview** (mis. mock interview).
-3. Mendapatkan **skor per pertanyaan** + **keputusan akhir** (PASS / Need Review).
-
-Model yang digunakan:
-- STT: Faster-Whisper (large-v3)
-- Penilaian jawaban: LLM (Ollama - Llama 3.1)
-"""
-)
-
-# System status check
-if not check_ollama_connection():
-    st.warning("**Ollama tidak terdeteksi!** Pastikan Ollama sudah running di `localhost:11434`")
-    st.info("Jalankan: `ollama serve` di terminal terpisah")
+# System status
+ollama_status = check_ollama_connection()
+if ollama_status:
+    st.markdown("""
+    <div class="success-box">
+        <strong>System Status:</strong> <span class="status-badge status-online">ONLINE</span><br>
+        <small>All services are operational</small>
+    </div>
+    """, unsafe_allow_html=True)
 else:
-    st.success("Ollama terkoneksi")
+    st.markdown("""
+    <div class="warning-box">
+        <strong>System Status:</strong> <span class="status-badge status-offline">OFFLINE</span><br>
+        <small>Ollama service is not running. Please start with: <code>ollama serve</code></small>
+    </div>
+    """, unsafe_allow_html=True)
 
 # -------------------------
 # Sidebar: global settings
 # -------------------------
-st.sidebar.header("Pengaturan")
-PASS_THRESHOLD = st.sidebar.slider("Threshold Lulus (%)", 0, 100, PASS_THRESHOLD, 5)
+with st.sidebar:
+    st.markdown("### Configuration")
+    st.markdown("---")
+    PASS_THRESHOLD = st.slider(
+        "Pass Threshold (%)",
+        0, 100, PASS_THRESHOLD, 5,
+        help="Minimum score required to pass the assessment"
+    )
+
+    st.markdown("---")
+    st.markdown("#### System Information")
+    st.markdown(f"""
+    - **STT Model:** Faster-Whisper (large-v3)
+    - **LLM:** Ollama (Llama 3.1)
+    - **Device:** {WHISPER_DEVICE.upper()}
+    - **Max Score:** {MAX_SCORE_PER_QUESTION} per question
+    """)
 
 # -------------------------
 # Section 1: Questions & Rubrics
 # -------------------------
 
-st.subheader("1. Pertanyaan & Rubrik Penilaian")
+st.markdown('<div class="section-header">STEP 1: Questions & Rubric Management</div>', unsafe_allow_html=True)
 
 # Add save/load functionality
 col_save, col_load = st.columns([1, 1])
 
 with col_save:
-    st.markdown("**Simpan Template**")
+    st.markdown("**Save Template**")
     # Prepare download data
     if "questions_df" in st.session_state:
         template_data = st.session_state.questions_df.to_dict('records')
@@ -350,49 +486,56 @@ with col_save:
         data=json_str,
         file_name="questions_template.json",
         mime="application/json",
-        help="Download template pertanyaan sebagai file JSON"
+        help="Save current questions as JSON template"
     )
 
 with col_load:
-    st.markdown("**Muat Template**")
-    uploaded_template = st.file_uploader(
-        "Upload file template JSON",
-        type=["json"],
-        key="template_uploader",
-        help="Pilih file JSON yang berisi template pertanyaan"
-    )
+    st.markdown("**Load Template**")
+    uploaded_template = st.file_uploader("Upload JSON Template", type="json", label_visibility="collapsed")
+    if uploaded_template is not None and not st.session_state.get("template_loaded", False):
+        try:
+            data_template = json.load(uploaded_template)
+            if isinstance(data_template, list):
+                st.session_state.questions_df = pd.DataFrame(data_template)
+                st.success("Template loaded successfully")
+                st.session_state["template_loaded"] = True
+            else:
+                st.error("Invalid template format")
+        except Exception as e:
+            st.error(f"Failed to load: {e}")
 
-# Handle template loading outside of column to avoid rerun issues
-if uploaded_template is not None and "template_loaded" not in st.session_state:
-    try:
-        template_data = json.load(uploaded_template)
-        st.session_state.questions_df = pd.DataFrame(template_data)
-        st.session_state.template_loaded = True
-        st.success(f"Template berhasil dimuat! ({len(template_data)} pertanyaan)")
+# Reset flag button
+if st.session_state.get("template_loaded", False):
+    if st.button("Load Another Template"):
+        st.session_state["template_loaded"] = False
         st.rerun()
-    except Exception as e:
-        st.error(f"Error membaca file: {e}")
 
-# Reset template_loaded flag when uploader is cleared
-if uploaded_template is None and "template_loaded" in st.session_state:
-    del st.session_state.template_loaded
+st.markdown('<div style="margin: 20px 0;"></div>', unsafe_allow_html=True)
 
 # Default questions if not in session state
 if "questions_df" not in st.session_state:
     st.session_state.questions_df = pd.DataFrame(
         [
             {
-                "question": "Ceritakan satu proyek machine learning terbaru yang kamu kerjakan.",
+                "question": "Tell me about a recent machine learning project you worked on.",
                 "rubric": (
-                    "Score 4: Menjelaskan proyek spesifik, peran pribadi, dataset, model, dan hasilnya.\n"
-                    "Score 3: Menjelaskan proyek cukup jelas tapi kurang detail teknis.\n"
-                    "Score 2: Menjelaskan sangat umum, minim detail.\n"
-                    "Score 1: Jawaban tidak relevan atau sangat singkat.\n"
-                    "Score 0: Tidak menjawab."
+                    "Score 4: Explains specific project, personal role, dataset, model, and results.\n"
+                    "Score 3: Explains project clearly but lacks technical details.\n"
+                    "Score 2: Very general explanation, minimal details.\n"
+                    "Score 1: Answer not relevant or very brief.\n"
+                    "Score 0: No answer."
                 ),
             }
         ]
     )
+
+num_questions = st.number_input(
+    "Number of Questions",
+    min_value=1,
+    max_value=20,
+    value=len(st.session_state.questions_df) if not st.session_state.questions_df.empty else 5,
+    help="Define how many interview questions"
+)
 
 # Sync data editor with session state
 questions_df = st.data_editor(
@@ -417,8 +560,18 @@ st.caption("HR dapat menambah/menghapus baris dan mengisi rubrik detail per pert
 # -------------------------
 
 st.subheader("2. Upload Video/Audio Jawaban Interview")
+# -------------------------
+# Section 2: Upload Interview Files
+# -------------------------
 
-st.info("**Petunjuk:** Upload video/audio sesuai urutan pertanyaan. Video 1 = Pertanyaan 1, Video 2 = Pertanyaan 2, dst.")
+st.markdown('<div class="section-header">STEP 2: Upload Interview Videos/Audios</div>', unsafe_allow_html=True)
+
+st.markdown("""
+<div class="info-box">
+    <strong>Instructions:</strong> Upload video/audio files in order matching your questions.<br>
+    Video 1 → Question 1, Video 2 → Question 2, etc.
+</div>
+""", unsafe_allow_html=True)
 
 # Supported file formats
 VIDEO_EXTENSIONS = ["mp4", "mkv", "mov", "avi", "webm"]
@@ -426,9 +579,10 @@ AUDIO_EXTENSIONS = ["mp3", "wav", "m4a", "flac", "ogg", "aac"]
 ALL_EXTENSIONS = VIDEO_EXTENSIONS + AUDIO_EXTENSIONS
 
 media_files = st.file_uploader(
-    "Upload file video/audio (urut sesuai pertanyaan)",
+    "Upload media files (in question order)",
     type=ALL_EXTENSIONS,
-    accept_multiple_files=True
+    accept_multiple_files=True,
+    help=f"Supported formats: {', '.join(ALL_EXTENSIONS)}"
 )
 
 if media_files:
@@ -436,10 +590,19 @@ if media_files:
     media_files = sorted(media_files, key=lambda x: x.name)
 
     num_questions = len(questions_df[questions_df["question"].fillna("").str.strip() != ""])
-    st.write(f"**{len(media_files)} file diupload** (untuk {num_questions} pertanyaan)")
+
+    st.markdown(f"""
+    <div class="success-box">
+        <strong>{len(media_files)} files uploaded</strong> (for {num_questions} questions)
+    </div>
+    """, unsafe_allow_html=True)
 
     if len(media_files) != num_questions:
-        st.warning(f"Jumlah file ({len(media_files)}) tidak sama dengan jumlah pertanyaan ({num_questions})")
+        st.markdown(f"""
+        <div class="warning-box">
+            File count ({len(media_files)}) does not match question count ({num_questions})
+        </div>
+        """, unsafe_allow_html=True)
 
     for idx, media_file in enumerate(media_files):
         # Check if it's video or audio based on extension
@@ -447,7 +610,7 @@ if media_files:
         is_audio_file = file_ext in AUDIO_EXTENSIONS
 
         # Get corresponding question
-        q_label = f"Pertanyaan {idx + 1}" if idx < num_questions else "Extra"
+        q_label = f"Question {idx + 1}" if idx < num_questions else "Extra"
 
         with st.expander(f"{q_label}: {media_file.name}", expanded=False):
             if is_audio_file:
@@ -460,15 +623,15 @@ if media_files:
 # Section 3: Run Assessment
 # -------------------------
 
-st.subheader("3. Jalankan Penilaian")
+st.markdown('<div class="section-header">STEP 3: Run AI Assessment</div>', unsafe_allow_html=True)
 
-run_button = st.button("Jalankan AI Assessment")
+run_button = st.button("Run Assessment", type="primary", use_container_width=True)
 
 if run_button:
     if not media_files:
-        st.error("Silakan upload video/audio interview terlebih dahulu.")
+        st.error("Please upload interview media files first.")
     elif questions_df["question"].fillna("").str.strip().eq("").all():
-        st.error("Minimal harus ada satu pertanyaan yang terisi.")
+        st.error("At least one question must be filled.")
     else:
         # Sort files by name
         media_files_sorted = sorted(media_files, key=lambda x: x.name)
@@ -477,7 +640,7 @@ if run_button:
         valid_questions = questions_df[questions_df["question"].fillna("").str.strip() != ""].reset_index(drop=True)
 
         if len(media_files_sorted) != len(valid_questions):
-            st.warning(f"Jumlah file ({len(media_files_sorted)}) tidak sama dengan jumlah pertanyaan ({len(valid_questions)}). Akan diproses sebanyak yang cocok.")
+            st.warning(f"File count ({len(media_files_sorted)}) does not match question count ({len(valid_questions)}). Will process the matching pairs.")
 
         # Process each video with its corresponding question
         per_question_results = []
@@ -503,9 +666,9 @@ if run_button:
             is_audio_file = file_ext in AUDIO_EXTENSIONS
 
             if is_audio_file:
-                spinner_text = f"Memproses audio {idx + 1}/{num_to_process}: transkripsi..."
+                spinner_text = f"Processing audio {idx + 1}/{num_to_process}: transcription..."
             else:
-                spinner_text = f"Memproses video {idx + 1}/{num_to_process}: ekstrak audio & transkripsi..."
+                spinner_text = f"Processing video {idx + 1}/{num_to_process}: extract audio & transcription..."
 
             with st.spinner(spinner_text):
                 try:
@@ -521,21 +684,21 @@ if run_button:
 
                     transcript = transcribe_audio(audio_path)
                 except Exception as e:
-                    st.error(f"Gagal memproses {media_file.name}: {e}")
+                    st.error(f"Failed to process {media_file.name}: {e}")
                     per_question_results.append({
                         "question": q_text,
                         "rubric": rubric,
                         "transcript": f"Error: {e}",
                         "score": 0,
-                        "reason": "Gagal memproses file"
+                        "reason": "Failed to process file"
                     })
                     continue
 
-            with st.expander("Transcript"):
+            with st.expander("View Transcript"):
                 st.text_area("Transcript", transcript, height=100, key=f"transcript_{idx}")
 
             # Evaluate this specific question with its transcript
-            with st.spinner(f"Menilai jawaban pertanyaan {idx + 1}..."):
+            with st.spinner(f"Evaluating answer for question {idx + 1}..."):
                 result = call_ollama(q_text, transcript, rubric)
 
             score = result["score"]
@@ -545,9 +708,9 @@ if run_button:
             # Show result
             col_score, col_reason = st.columns([1, 3])
             with col_score:
-                st.metric(f"Skor", f"{score}/{MAX_SCORE_PER_QUESTION}")
+                st.metric(f"Score", f"{score}/{MAX_SCORE_PER_QUESTION}")
             with col_reason:
-                st.write(f"**Alasan:** {reason}")
+                st.markdown(f"**Evaluation:** {reason}")
 
             per_question_results.append({
                 "question": q_text,
@@ -568,36 +731,49 @@ if run_button:
         interview_score_scaled = (total_score / max_possible) * 100.0
         final_total_score = interview_score_scaled
 
-        decision = "PASSED" if final_total_score >= PASS_THRESHOLD else "Need Human Review"
+        decision = "PASSED" if final_total_score >= PASS_THRESHOLD else "NEEDS REVIEW"
 
         # Summary
         st.markdown("---")
-        st.subheader("Ringkasan Penilaian Kandidat")
+        st.markdown('<div class="section-header">Assessment Results</div>', unsafe_allow_html=True)
 
         # Results table
         results_df = pd.DataFrame(per_question_results)
         st.dataframe(
             results_df[["question", "score", "reason"]],
-            width="stretch",
+            use_container_width=True,
             column_config={
-                "question": st.column_config.TextColumn("Pertanyaan", width="medium"),
-                "score": st.column_config.NumberColumn("Skor", width="small"),
-                "reason": st.column_config.TextColumn("Alasan", width="large"),
+                "question": st.column_config.TextColumn("Question", width="medium"),
+                "score": st.column_config.NumberColumn("Score", width="small"),
+                "reason": st.column_config.TextColumn("Evaluation", width="large"),
             }
         )
 
         # Score metrics
+        st.markdown('<div style="margin: 20px 0;"></div>', unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         c1.metric("Interview Score", f"{interview_score_scaled:.1f}/100")
         c2.metric("Final Score", f"{final_total_score:.1f}/100")
 
+        st.markdown('<div style="margin: 20px 0;"></div>', unsafe_allow_html=True)
+
         if decision == "PASSED":
-            st.success(f"### Keputusan: **{decision}**")
+            st.markdown(f"""
+            <div class="success-box">
+                <h3 style="margin: 0;">Decision: {decision}</h3>
+                <p style="margin: 5px 0 0 0;">Candidate has met the passing criteria</p>
+            </div>
+            """, unsafe_allow_html=True)
         else:
-            st.warning(f"### Keputusan: **{decision}**")
+            st.markdown(f"""
+            <div class="warning-box">
+                <h3 style="margin: 0;">Decision: {decision}</h3>
+                <p style="margin: 5px 0 0 0;">Score is below threshold, human review required</p>
+            </div>
+            """, unsafe_allow_html=True)
 
         # Export results
-        st.subheader("Export Hasil")
+        st.markdown('<div style="margin: 30px 0 10px 0;"><strong>Export Results</strong></div>', unsafe_allow_html=True)
 
         export_data = {
             "assessorProfile": {
@@ -628,7 +804,8 @@ if run_button:
                 label="Download JSON",
                 data=json_str,
                 file_name="assessment_result.json",
-                mime="application/json"
+                mime="application/json",
+                use_container_width=True
             )
 
         with col_export2:
@@ -637,7 +814,13 @@ if run_button:
                 label="Download CSV",
                 data=csv_data,
                 file_name="assessment_result.csv",
-                mime="text/csv"
+                mime="text/csv",
+                use_container_width=True
             )
 
-        st.success("Penilaian selesai.")
+        st.markdown("""
+        <div class="success-box" style="margin-top: 20px;">
+            Assessment completed successfully
+        </div>
+        """, unsafe_allow_html=True)
+
