@@ -163,12 +163,9 @@ AI-Powered-Interview-Assessment-System/
 ├── UI.py                           # Main Streamlit application
 ├── STT.py                          # Speech-to-text utilities (legacy)
 ├── taketogether.py                 # Video concatenation tool
-├── deploy_ngrok.py                 # Deployment script with ngrok
-├── start.sh                        # Quick start script
 ├── requirements.txt                # Python dependencies
 ├── requirements-app.txt            # App-specific dependencies
 ├── USER_GUIDE.md                   # Complete usage documentation
-├── DEPLOYMENT.md                   # Deployment guide
 ├── QUICKSTART.md                   # Fast setup guide
 ├── questions_template.json         # Question template
 ├── questions_template_example.json # Example template
